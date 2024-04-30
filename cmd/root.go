@@ -1,19 +1,22 @@
 /*
-Copyright © 2024 Mohammad Alsmadi <smadi.dev@gmail.com>
+Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 */
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/smadixd/toolbox-cli/cmd/info"
 	"github.com/smadixd/toolbox-cli/cmd/net"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-// rootCmd represents the base command when called without any subcommands
+var cfgFile string
+
 var rootCmd = &cobra.Command{
-	Use:   "toolbox",
+	Use:   "toolbox-cli",
 	Short: "A brief description of your application",
 	Long:  ``,
 }
@@ -25,12 +28,33 @@ func Execute() {
 	}
 }
 
-func addSubcommandsPalettes() {
+func init() {
+	cobra.OnInitialize(initConfig)
+
+	// Add my subcommands
 	rootCmd.AddCommand(net.NetCmd)
 	rootCmd.AddCommand(info.InfoCmd)
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.toolbox-cli.yaml)")
+
+	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	addSubcommandsPalettes()
+func initConfig() {
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		viper.AddConfigPath(home)
+		viper.SetConfigType("yaml")
+		viper.SetConfigName(".toolbox-cli")
+	}
+
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+	}
 }
