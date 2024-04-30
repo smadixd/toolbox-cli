@@ -6,7 +6,7 @@ Toolbox CLI is a simple command-line tool that allows you to show ping and disk 
 
 To install Toolbox CLI, you need to have Go installed on your machine. Then, run the following command:
 
-go get -u github.com/your-username/toolbox-cli
+go get -u github.com/smadixd/toolbox-cli
 
 # Usage
 
@@ -21,11 +21,11 @@ toolbox-cli [command]
 
 For example, to ping google.com, you can run:
 
-toolbox-cli ping google.com
+toolbox-cli net ping --url google.com
 
 To check the disk usage of the current directory, you can run:
 
-toolbox-cli disk-usage .
+toolbox-cli info diskUsage
 
 ## Contributing
 
